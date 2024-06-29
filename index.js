@@ -48,7 +48,9 @@ app.use(morgan(
 
 
 app.get('/',(request,response) => {
-    response.end()
+    Person.find({}).then(persons =>{
+        response.end()
+    })
 })
 
 
