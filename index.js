@@ -96,16 +96,11 @@ const rndNewId = (min,max) =>{
 app.post('/api/persons',(request,response) =>{
     const body = request.body
 
-    if(!body.name || persons.find(p => body.name === p.name)){
-        if(body.name){
-            return response.status(400).json({
-                error: 'name must be unique'
-            })
-        }
+    if(body.name === undefined){
         return response.status(400).json({
             error: 'name missing'
         })
-    }else if(!body.number){
+    }else if(body.number === undefined){
         return response.status(400).json({
             error: 'number missing'
         })
