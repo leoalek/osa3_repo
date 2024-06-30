@@ -14,6 +14,21 @@ morgan.token('body',function(req,res){
     return JSON.stringify(req.body)
 })
 
+
+const errorHandler = (error,request,response,next) => {
+    console.error(error.message)
+    if(error.name === 'CastError'){
+        return response.status(400).send({error: 'malformatted id'})
+    }else if(error.message === 'name missing'){
+        return response.status(400).json({error: 'name missing'})
+    }else if (error.message === 'number missing'){
+        return response.status(400).json({error: 'number missing'})
+    }
+
+    next(error)
+}
+
+
 let persons = [
     {
         id:1,
@@ -47,17 +62,18 @@ app.use(morgan(
 }))
 
 
+//get people
 app.get('/',(request,response) => {
     Person.find({}).then(persons =>{
         response.end()
-    })
+    }).catch(error => next(error))
 })
 
-
+//list of people
 app.get('/api/persons',(request,response) => {
     Person.find({}).then(persons => {
         response.json(persons)
-    })
+    })(error => next(error))
 })
 
 app.get('/info',(request,response) =>{
@@ -71,6 +87,7 @@ app.get('/info',(request,response) =>{
     )
 })
 
+//get person w/ id
 app.get('/api/persons/:id',(request,response) =>{
     const id = Number(request.params.id)
     const person = persons.find(person => person.id === id)
@@ -93,28 +110,27 @@ const rndNewId = (min,max) =>{
     return Math.floor(Math.random()*max-min)+min
 }
 
+//add person
 app.post('/api/persons',(request,response) =>{
     const body = request.body
 
     if(body.name === undefined){
-        return response.status(400).json({
-            error: 'name missing'
-        })
+        return next(new Error('name missing'))
     }else if(body.number === undefined){
-        return response.status(400).json({
-            error: 'number missing'
-        })
+        return next (new Error('number missing'))
     }
+
     const person = new Person ({
         name: body.name,
         number: body.number
     })
+
     person.save().then(savedPerson =>{
         response.json(savedPerson)
-    })
+    }).catch(error => next(error))
 })
 
-
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT,() => {
