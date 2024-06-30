@@ -114,9 +114,9 @@ const rndNewId = (min,max) =>{
 app.post('/api/persons',(request,response) =>{
     const body = request.body
 
-    if(body.name === undefined){
+    if(!body.name){
         return next(new Error('name missing'))
-    }else if(body.number === undefined){
+    }else if(!body.number){
         return next (new Error('number missing'))
     }
 
