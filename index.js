@@ -81,14 +81,14 @@ app.get('/api/persons/:id',(request,response) =>{
     }
 })
 
-app.delete('/api/persons/:id',(request,response) =>{
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
+//delete person
+app.delete('/api/persons/:id',(request,response,next) =>{
+    Person.findByIdAndDelete(request.params.id).then(result =>{
+       response.status(204).end() 
+    }).catch(error => next(error))
 })
 
-
+// random number generator (for id)
 const rndNewId = (min,max) =>{
     return Math.floor(Math.random()*max-min)+min
 }
@@ -105,12 +105,10 @@ app.post('/api/persons',(request,response) =>{
             error: 'number missing'
         })
     }
-
     const person = new Person ({
         name: body.name,
         number: body.number
     })
-
     person.save().then(savedPerson =>{
         response.json(savedPerson)
     })
