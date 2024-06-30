@@ -106,11 +106,10 @@ app.post('/api/persons',(request,response) =>{
         })
     }
 
-    const person = {
-        id: rndNewId(1,10000),
+    const person = new Person ({
         name: body.name,
         number: body.number
-    }
+    })
 
     person.save().then(savedPerson =>{
         response.json(savedPerson)
