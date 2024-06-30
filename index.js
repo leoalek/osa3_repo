@@ -66,14 +66,14 @@ app.use(morgan(
 app.get('/',(request,response) => {
     Person.find({}).then(persons =>{
         response.end()
-    }).catch(error => next(error))
+    })
 })
 
 //list of people
 app.get('/api/persons',(request,response) => {
     Person.find({}).then(persons => {
         response.json(persons)
-    }).catch(error => next(error))
+    })
 })
 
 app.get('/info',(request,response) =>{
