@@ -77,14 +77,17 @@ app.get('/api/persons',(request,response) => {
 })
 
 app.get('/info',(request,response) =>{
-    const total = persons.length
     const date = Date()
-    response.send(
+    Person.find({}).then(persons => {
+        response.send(
         `
-        <p>Phonebook has info for ${total} people</p>
+        <p>Phonebook has info for ${persons.length} people</p>
         <p>${date}</p>
         `
-    )
+        )
+    })
+    
+    
 })
 
 //get person w/ id
