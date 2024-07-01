@@ -77,7 +77,7 @@ app.get('/api/persons',(request,response) => {
 })
 
 app.get('/info',(request,response) =>{
-    const date = Date()
+    const date = new Date()
     Person.find({}).then(persons => {
         response.send(
         `
