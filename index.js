@@ -18,7 +18,9 @@ morgan.token('body',function(req,res){
 const errorHandler = (error,request,response,next) => {
     console.error(error.message)
     if(error.name === 'CastError'){
-        return response.status(404).send({error: 'malformatted id'})
+        return response.status(400).send({error: 'malformatted id'})
+    }else if(error.name === 'ValidationError'){
+        return response.status(400).json({error: error.message})
     }else if(error.message === 'name missing'){
         return response.status(400).send({error: 'name missing'})
     }else if (error.message === 'number missing'){
@@ -130,13 +132,13 @@ app.post('/api/persons',(request,response,next) =>{
 })
 
 app.put('/api/persons/:id',(request,response,next) =>{
-    const body = request.body
-    const person = {
-        name: body.name,
-        number: body.number,
-    }
+    const {name, number} = request.body
 
-    Person.findByIdAndUpdate(request.params.id,person,{new : true}).then(updatedPerson =>{
+    Person.findByIdAndUpdate(
+        request.params.id,
+        {name, number},
+        {new : true, runValidators: true, context:'query'})
+    .then(updatedPerson =>{
         response.json(updatedPerson)
     }).catch(error =>next(error))
 })
