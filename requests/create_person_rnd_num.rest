@@ -2,6 +2,6 @@ POST https://osa3-palautus.onrender.com/api/persons
 Content-Type: application/json
 
 {
-    "name": "lkjdasld",
-    "number": ""
+    "name": "lk",
+    "number": "3333"
 }
